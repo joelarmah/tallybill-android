@@ -1,6 +1,13 @@
 package com.github.joelarmah.tallybill.ui
 
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.outlined.Add
+import androidx.compose.material.icons.outlined.Home
+import androidx.compose.material.icons.outlined.List
+import androidx.compose.material.icons.outlined.Person
+import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -10,6 +17,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -26,13 +34,15 @@ import com.github.joelarmah.tallybill.util.Routes
 fun BottomNavigationBar() {
 
     val navController = rememberNavController()
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentDestination = navBackStackEntry?.destination
 
     Scaffold(
         bottomBar = {
+
+            val navBackStackEntry by navController.currentBackStackEntryAsState()
+            val currentDestination = navBackStackEntry?.destination
+
             NavigationBar {
-                BottomNavigationItem().bottomNavigationItems().forEachIndexed { index, navigationItem ->
+                BottomNavigationItem().bottomNavigationItems().forEach { navigationItem ->
                     NavigationBarItem(
                         selected = navigationItem.route == currentDestination?.route,
                         label = {
@@ -57,24 +67,71 @@ fun BottomNavigationBar() {
                 }
             }
         }
-    ) { paddingValues ->
+    ) { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = Routes.DASHBOARD,
-            modifier = Modifier.padding(paddingValues)
+            startDestination = Screen.Dashboard.route,
+            modifier = Modifier.padding(innerPadding)
         ) {
-            composable(Routes.DASHBOARD) {
+            composable(Screen.Dashboard.route) {
                 DashboardScreen()
             }
-            composable(Routes.CUSTOMERS_LIST) {
+            composable(Screen.Customers.route) {
                 CustomerListScreen()
             }
-            composable(Routes.PRODUCTS_LIST) {
+            composable(Screen.Add.route) {
+                // AddScreen()
+            }
+            composable(Screen.Products.route) {
                 ProductListScreen()
             }
-            composable(Routes.SETTINGS) {
+            composable(Screen.Settings.route) {
                 SettingsScreen()
             }
         }
     }
+}
+
+data class BottomNavigationItem(
+    val label: String = "",
+    val icon: ImageVector = Icons.Filled.Home,
+    val route: String = "",
+) {
+    fun bottomNavigationItems(): List<BottomNavigationItem> {
+        return listOf(
+            BottomNavigationItem(
+                label = Screen.Dashboard.label,
+                icon = Icons.Outlined.Home,
+                route = Screen.Dashboard.route
+            ),
+            BottomNavigationItem(
+                label = Screen.Customers.label,
+                icon = Icons.Outlined.Person,
+                route = Screen.Customers.route
+            ),
+            BottomNavigationItem(
+                label = "",
+                icon = Icons.Outlined.Add,
+                route = Screen.Add.route
+            ),
+            BottomNavigationItem(
+                label = Screen.Products.label,
+                icon = Icons.Outlined.List,
+                route = Screen.Products.route
+            ),
+            BottomNavigationItem(
+                label = Screen.Settings.label,
+                icon = Icons.Outlined.Settings,
+                route = Screen.Settings.route
+            )
+        )
+    }
+}
+
+sealed class Screen(val route: String, val label: String) {
+    object Dashboard: Screen(Routes.DASHBOARD, "Dashboard")
+    object Products: Screen(Routes.PRODUCTS_LIST, "Products")
+    object Add: Screen(Routes.ADD, "Add")
+    object Customers: Screen(Routes.CUSTOMERS_LIST, "Customers")
+    object Settings: Screen(Routes.SETTINGS, "Settings")
 }
