@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Tallybill</string>
+    <string name="dashboard">Dashboard</string>
+    <string name="products">Products</string>
+    <string name="add">Add</string>
+    <string name="customers">Customers</string>
+    <string name="settings">Settings</string>
+</resources>
