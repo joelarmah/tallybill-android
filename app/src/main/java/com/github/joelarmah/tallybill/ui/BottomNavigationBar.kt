@@ -1,7 +1,5 @@
 package com.github.joelarmah.tallybill.ui
 
-import android.R
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.outlined.Add
@@ -16,18 +14,11 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.github.joelarmah.tallybill.ui.customers.CustomerListScreen
-import com.github.joelarmah.tallybill.ui.dashboard.DashboardScreen
-import com.github.joelarmah.tallybill.ui.products.ProductListScreen
-import com.github.joelarmah.tallybill.ui.settings.SettingsScreen
 import com.github.joelarmah.tallybill.util.Routes
 
 
@@ -75,30 +66,11 @@ fun BottomNavigationBar(
             }
         }
     ) { innerPadding ->
-        NavHost(
-            navController = navController,
-            startDestination = Screen.Dashboard.route,
-            modifier = Modifier.padding(innerPadding)
-        ) {
-            composable(Screen.Dashboard.route) {
-                DashboardScreen()
-            }
-            composable(Screen.Customers.route) {
-                CustomerListScreen(
-                    addCustomer = { navActions.navigateToAddEditPlanet("Add customer", null) },
-                    editCustomer = { customerId -> navActions.navigateToAddEditPlanet("Edit Customer", customerId)}
-                )
-            }
-            composable(Screen.Add.route) {
-                // AddScreen()
-            }
-            composable(Screen.Products.route) {
-                ProductListScreen()
-            }
-            composable(Screen.Settings.route) {
-                SettingsScreen()
-            }
-        }
+        NavGraph(
+            navController,
+            navActions,
+            innerPadding
+        )
     }
 }
 
