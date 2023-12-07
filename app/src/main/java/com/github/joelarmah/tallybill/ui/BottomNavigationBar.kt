@@ -1,5 +1,6 @@
 package com.github.joelarmah.tallybill.ui
 
+import android.R
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
@@ -14,11 +15,11 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -29,9 +30,15 @@ import com.github.joelarmah.tallybill.ui.products.ProductListScreen
 import com.github.joelarmah.tallybill.ui.settings.SettingsScreen
 import com.github.joelarmah.tallybill.util.Routes
 
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BottomNavigationBar() {
+fun BottomNavigationBar(
+    navController: NavHostController = rememberNavController(),
+    navActions: NavigationActions = remember(navController) {
+        NavigationActions(navController)
+    }
+) {
 
     val navController = rememberNavController()
 
@@ -77,7 +84,10 @@ fun BottomNavigationBar() {
                 DashboardScreen()
             }
             composable(Screen.Customers.route) {
-                CustomerListScreen()
+                CustomerListScreen(
+                    addCustomer = { navActions.navigateToAddEditPlanet("Add customer", null) },
+                    editCustomer = { customerId -> navActions.navigateToAddEditPlanet("Edit Customer", customerId)}
+                )
             }
             composable(Screen.Add.route) {
                 // AddScreen()
@@ -129,9 +139,9 @@ data class BottomNavigationItem(
 }
 
 sealed class Screen(val route: String, val label: String) {
-    object Dashboard: Screen(Routes.DASHBOARD, "Dashboard")
-    object Products: Screen(Routes.PRODUCTS_LIST, "Products")
-    object Add: Screen(Routes.ADD, "Add")
-    object Customers: Screen(Routes.CUSTOMERS_LIST, "Customers")
-    object Settings: Screen(Routes.SETTINGS, "Settings")
+    data object Dashboard: Screen(Routes.DASHBOARD, "Dashboard")
+    data object Products: Screen(Routes.PRODUCTS_LIST, "Products")
+    data object Add: Screen(Routes.ADD, "Add")
+    data object Customers: Screen(Routes.CUSTOMERS_LIST, "Customers")
+    data object Settings: Screen(Routes.SETTINGS, "Settings")
 }
